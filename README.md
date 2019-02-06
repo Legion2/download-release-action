@@ -1,5 +1,5 @@
 # Download GitHub Release GitHub Action
-GitHub Action for downloading GitHub elease archives. It downloads the zip archive and unzips it into a directory.
+GitHub Action for downloading GitHub release archives. It downloads the zip archive and unzips it into a directory.
 
 ## Usage
 ```
