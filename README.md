@@ -1,25 +1,28 @@
 # Download GitHub Release GitHub Action
-GitHub Action for downloading GitHub release archives. It downloads the zip archive and unzips it into a directory.
+GitHub Action for downloading files from GitHub release.
+It can download the source zip archive and unzip it into a directory.
+It is also possible to download any other file of the release.
 
 ## Usage
+See [action.yml](action.yml) for comprehensive list of parameters.
+
+Basic:
+```yaml
+on: push
+name: Main Workflow
+jobs:
+  build:
+    name: "Download release"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download CLI
+      uses: Legion2/download-release-action@v2.0.0
+      with:
+        repository: apache/openwhisk-cli
+        tag: '0.10.0-incubating'
+        path: downloads
+        file: OpenWhisk_CLI-0.10.0-incubating-all.tgz
 ```
-action "Download release" {
-  uses = "Legion2/download-release-action@master"
-  args = "Legion2/download-release-action v1.0.0"
-  env = {
-    TARGET_PATH = "downloads"
-  }
-}
-```
-
-### Arguments
-The first argument is the username and repository name from which to download the release archive.
-The username and repository name are separated  by a `/`.
-
-The second argument is the version tag of the release.
-
-### Environment variables
-* **`TARGET_PATH`** *(optional)* : overrides the default download directory.
 
 ## License
 The Dockerfile and associated scripts and documentation in this project are released under the [Apache-2.0 License](LICENSE).

@@ -1,0 +1,24 @@
+name: 'Download GitHub Release'
+description: 'Download any files from Github Releases'
+author: 'GitHub'
+inputs: 
+  repository:
+    description: |
+      The repository from where to download the files.
+      Given as <user>/<repository>
+    required: true
+  tag:
+    description: 'The version tag of the release'
+    required: true
+  file:
+    description: 'The file which should be downloaded'
+    required: false
+  path:
+    description: 'download directory'
+    default: './'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'download'
+  color: 'blue'
