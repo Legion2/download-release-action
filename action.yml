@@ -1,6 +1,6 @@
 name: 'Download GitHub Release'
 description: 'Download any files from Github Releases'
-author: 'GitHub'
+author: 'Leon Kiefer'
 inputs: 
   repository:
     description: |
