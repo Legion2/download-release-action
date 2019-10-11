@@ -16,6 +16,9 @@ inputs:
   path:
     description: 'download directory'
     default: './'
+  private:
+    description: 'Private repo flag'
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
