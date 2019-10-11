@@ -11,14 +11,16 @@ inputs:
     description: 'The version tag of the release'
     required: true
   file:
-    description: 'The file which should be downloaded'
+    description: |
+      The file which should be downloaded.
+      If not specified download the source code. 
     required: false
   path:
     description: 'download directory'
     default: './'
-  private:
-    description: 'Private repo flag'
-    default: false
+  token:
+    description: 'Github token to access private repositories'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'

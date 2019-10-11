@@ -1,40 +1,56 @@
-#!/usr/bin/env ash
+#!/bin/sh
 # Based on original work at https://gist.github.com/maxim/6e15aa45ba010ab030c4
 #
 # USAGE
-# gh-dl-release <github token> <org/repo> <filename> <version or 'latest'>
+# gh-dl-release <org/repo> <version or 'latest'> <filename> [<github token>]
 
-if [ $# -lt 4 ] ;then
-    echo "Usage: <github token> <org/repo> <filename> <version or 'latest'> <target_dir>"
+set -e
+
+if [ $# -lt 3 ] ;then
+    echo "Usage: <org/repo> <version or 'latest'> <filename> [<github token>]"
     exit 1
 fi
 
-TOKEN="$1"
-REPO="$2"
+REPO="$1"
+VERSION="$2"                       # tag name or the word "latest"
 FILE="$3"      # the name of your release asset file, e.g. build.tar.gz
-VERSION=$4                       # tag name or the word "latest"
-DIR="$5"  # target directory
+TOKEN="$4"
 GITHUB_API_ENDPOINT="api.github.com"
 
 alias errcho='>&2 echo'
 
-function gh_curl() {
-  curl -sL -H "Authorization: token $TOKEN" \
+gh_curl() {
+  if [ -z "$TOKEN" ]; then
+    curl -sL \
        -H "Accept: application/vnd.github.v3.raw" \
-       $@
+       "$@"
+  else
+    curl -sL -H "Authorization: token $TOKEN" \
+       -H "Accept: application/vnd.github.v3.raw" \
+       "$@"
+  fi
+}
+
+gh_get_asset() {
+  if [ -z "$TOKEN" ]; then
+    curl -sL -H 'Accept: application/octet-stream' https://$GITHUB_API_ENDPOINT/repos/$REPO/releases/assets/$1
+  else
+    curl -sL -H "Authorization: token $TOKEN" -H 'Accept: application/octet-stream' https://$GITHUB_API_ENDPOINT/repos/$REPO/releases/assets/$1
+  fi
 }
 
 if [ "$VERSION" = "latest" ]; then
-  # Github should return the latest release first.
-  PARSER=".[0].assets | map(select(.name == \"$FILE\"))[0].id"
+  RELASE_URL="https://$GITHUB_API_ENDPOINT/repos/$REPO/releases/latest"
 else
-  PARSER=". | map(select(.tag_name == \"$VERSION\"))[0].assets | map(select(.name == \"$FILE\"))[0].id"
+  RELASE_URL="https://$GITHUB_API_ENDPOINT/repos/$REPO/releases/tags/$VERSION"
 fi
 
-ASSET_ID=`gh_curl https://$GITHUB_API_ENDPOINT/repos/$REPO/releases | jq "$PARSER"`
+PARSER=".assets | map(select(.name == \"$FILE\"))[0].id"
+
+ASSET_ID=`gh_curl https://$GITHUB_API_ENDPOINT/repos/$REPO/releases/tags/$VERSION | jq "$PARSER"`
 if [ "$ASSET_ID" = "null" ]; then
   errcho "ERROR: version not found $VERSION"
   exit 1
 fi
 
-curl -sL --header "Authorization: token $TOKEN" --header 'Accept: application/octet-stream' https://$TOKEN:@$GITHUB_API_ENDPOINT/repos/$REPO/releases/assets/$ASSET_ID > $DIR/$FILE
+gh_get_asset $ASSET_ID > "$FILE"
