@@ -1,5 +1,7 @@
 FROM alpine
 
-COPY entrypoint.sh /entrypoint.sh
+RUN apk add jq curl
+
+COPY entrypoint.sh gh-dl-release /
 
 ENTRYPOINT ["/entrypoint.sh"]
