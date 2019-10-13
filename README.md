@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download CLI
-      uses: Legion2/download-release-action@v2.0.0
+      uses: Legion2/download-release-action@v2.1.0
       with:
         repository: apache/openwhisk-cli
         tag: '0.10.0-incubating'
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download CLI
-      uses: Legion2/download-release-action@v2.0.0
+      uses: Legion2/download-release-action@v2.1.0
       with:
         repository: Legion2/private-repo
         tag: '1.0.0'
